@@ -4,7 +4,7 @@
 <head>
 
     <!-- Webpage Title -->
-    <title>Hello, world!</title>
+    <title>나홀로 링크 메모장!</title>
 
     <!-- Required meta tags -->
     <meta charset="utf-8">
@@ -22,156 +22,137 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
         crossorigin="anonymous"></script>
-    <!-- 구글 폰트 Nanum Pen Script -->
-    <link href="https://fonts.googleapis.com/css?family=Nanum+Pen+Script&display=swap" rel="stylesheet">
 
-    <style>
+    <!-- 구글폰트 -->
+    <link href="https://fonts.googleapis.com/css?family=Stylish&display=swap" rel="stylesheet">
+
+    <!-- style -->
+    <style type="text/css">
         * {
-            font-family: 'Nanum Pen Script', cursive;
+            font-family: 'Stylish', sans-serif;
         }
 
-        .wrapper {
+        .wrap {
             width: 900px;
             margin: auto;
-
         }
 
         .comment {
             color: blue;
-            font-size: 20px;
+            font-weight: bold;
         }
 
-        .card-body > a {
-            font-size: 30px;
-            color: greenyellow;
+        .form-post {
+            max-width: 500px;
+            padding: 2rem;
+            margin: 2rem auto;
+            border-color: #e9ecef;
+            border-radius: 0.3rem;
+            border: solid;
+            display: block;
         }
 
-        .box {
-            font-size: 20px;
-            width: 500px;
-            margin: auto auto 50px auto;
-            border: 3px solid black;
-            border-radius: 20px;
-            padding: 30px 30px 10px 30px;
+        #post-box {
+            display: none;
         }
     </style>
+
+    <script>
+        $(document).ready(function () {
+            listing();
+        });
+
+        // 화면 로딩 후 실행
+        function listing() {
+            $('#cards-box').empty();
+
+            $.ajax({
+                type: "GET",
+                url: "http://spartacodingclub.shop/post",
+                data: {},
+                success: function (response) {
+                    articles_data = response['articles']
+                    for (i = 0; i < articles_data.length; i++) {
+                        let comment = articles_data[i]['comment']
+                        let desc = articles_data[i]['desc']
+                        let image = articles_data[i]['image']
+                        let title = articles_data[i]['title']
+                        let url = articles_data[i]['url']
+
+                        let temp_html = '<div class="card">\
+                                            <img class="card-img-top"\
+                                                src="' + image + '"\
+                                                alt="Card image cap">\
+                                            <div class="card-body">\
+                                                <a href="' + url + '" class="card-title">' + title + '</a>\
+                                                <p class="card-text">' + desc + '</p>\
+                                                <p class="card-text comment">' + comment + '</p>\
+                                            </div>\
+                                        </div>'
+
+                        $('#cards-box').append(temp_html);
+                    }
+                }
+            });
+        }
+
+        // 포스팅박스 열기 닫기
+        function openclose() {
+            if ($('#post-box').css('display') == 'none') {
+                $('#btn-posting-box').text("포스팅 박스 닫기")
+                $('#post-box').show()
+            }
+            else {
+                $('#btn-posting-box').text("포스팅 박스 열기")
+                $('#post-box').hide()
+            }
+        }
+
+    </script>
 </head>
 
 <body>
-    <div class="wrapper">
+    <div class="wrap">
         <div class="jumbotron">
             <h1 class="display-4">나홀로 링크 메모장!</h1>
             <p class="lead">중요한 링크를 저장해두고, 나중에 볼 수 있는 공간입니다</p>
             <hr class="my-4">
-            <!-- <p>It uses utility classes for typography and spacing to space content out within the larger container.</p> -->
             <p class="lead">
-                <a class="btn btn-outline-danger btn-lg" href="#" role="button">포스팅박스 열기</a>
+                <!-- <button id="btn-posting-box" onclick="openclose()" type="button" class="btn btn-primary">포스팅 박스 열기</button> -->
+                <a id="btn-posting-box" onclick="openclose()" class="btn btn-primary btn-lg" href="#"
+                    role="button">포스팅박스 열기</a>
             </p>
         </div>
 
-        <div class="box">
-            <div class="form-group">
-                <label for="exampleFormControlInput1">아티클 URL</label>
-                <input type="email" class="form-control" id="exampleFormControlInput1">
+        <!-- 포스트 박스 -->
+        <div class="form-post" id="post-box">
+            <div>
+                <div class="form-group">
+                    <label for="exampleFormControlInput1">아티클 URL</label>
+                    <input class="form-control" placeholder="">
+                </div>
+                <div class="form-group">
+                    <label for="exampleFormControlTextarea1">간단 코멘트</label>
+                    <textarea class="form-control" rows="2"></textarea>
+                </div>
+                <button type="button" class="btn btn-primary">기사저장</button>
             </div>
-            <div class="form-group">
-                <label for="exampleFormControlTextarea1">간단 코멘트</label>
-                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
-            </div>
-            <p class="lead">
-                <a class="btn btn-primary btn-lg" href="#" role="button">기사 저장</a>
-            </p>
         </div>
 
-
-        <div class="card-columns">
+        <!-- 카드 박스 function listing (empty + append) -->
+        <div class="card-columns" id="cards-box">
             <div class="card">
                 <img class="card-img-top"
-                    src="https://dictionary.cambridge.org/ko/images/thumb/forest_noun_002_14696.jpg?version=5.0.73"
+                    src="https://www.eurail.com/content/dam/images/eurail/Italy%20OCP%20Promo%20Block.adaptive.767.1535627244182.jpg"
                     alt="Card image cap">
                 <div class="card-body">
-                    <a href="#">여기 기사 제목이 들어가죠</a>
-                    <!-- <h5 class="card-title">여기 기사 제목이 들어가죠</h5> -->
-                    <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...
-                    </p>
-                    <p class="comment">여기에 코멘트가 들어갑니다</p>
-
+                    <a href="#" class="card-title">여기 기사 제목이 들어가죠</a>
+                    <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...</p>
+                    <p class="card-text comment">여기에 코멘트가 들어갑니다.</p>
                 </div>
             </div>
-
-            <div class="card">
-                <img class="card-img-top"
-                    src="https://dictionary.cambridge.org/ko/images/thumb/forest_noun_002_14696.jpg?version=5.0.73"
-                    alt="Card image cap">
-                <div class="card-body">
-                    <a href="./index.html">여기 기사 제목이 들어가죠</a>
-                    <!-- <h5 class="card-title">여기 기사 제목이 들어가죠</h5> -->
-                    <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...
-                    </p>
-                    <p class="comment">여기에 코멘트가 들어갑니다</p>
-
-                </div>
-            </div>
-
-            <div class="card">
-                <img class="card-img-top"
-                    src="https://dictionary.cambridge.org/ko/images/thumb/forest_noun_002_14696.jpg?version=5.0.73"
-                    alt="Card image cap">
-                <div class="card-body">
-                    <a href="./index.html">여기 기사 제목이 들어가죠</a>
-                    <!-- <h5 class="card-title">여기 기사 제목이 들어가죠</h5> -->
-                    <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...
-                    </p>
-                    <p class="comment">여기에 코멘트가 들어갑니다</p>
-
-                </div>
-            </div>
-
-            <div class="card">
-                <img class="card-img-top"
-                    src="https://dictionary.cambridge.org/ko/images/thumb/forest_noun_002_14696.jpg?version=5.0.73"
-                    alt="Card image cap">
-                <div class="card-body">
-                    <a href="./index.html">여기 기사 제목이 들어가죠</a>
-                    <!-- <h5 class="card-title">여기 기사 제목이 들어가죠</h5> -->
-                    <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...
-                    </p>
-                    <p class="comment">여기에 코멘트가 들어갑니다</p>
-
-                </div>
-            </div>
-
-            <div class="card">
-                <img class="card-img-top"
-                    src="https://dictionary.cambridge.org/ko/images/thumb/forest_noun_002_14696.jpg?version=5.0.73"
-                    alt="Card image cap">
-                <div class="card-body">
-                    <a href="./index.html">여기 기사 제목이 들어가죠</a>
-                    <!-- <h5 class="card-title">여기 기사 제목이 들어가죠</h5> -->
-                    <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...
-                    </p>
-                    <p class="comment">여기에 코멘트가 들어갑니다</p>
-
-                </div>
-            </div>
-
-            <div class="card">
-                <img class="card-img-top"
-                    src="https://dictionary.cambridge.org/ko/images/thumb/forest_noun_002_14696.jpg?version=5.0.73"
-                    alt="Card image cap">
-                <div class="card-body">
-                    <a href="./index.html">여기 기사 제목이 들어가죠</a>
-                    <!-- <h5 class="card-title">여기 기사 제목이 들어가죠</h5> -->
-                    <p class="card-text">기사의 요약 내용이 들어갑니다. 동해물과 백두산이 마르고 닳도록 하느님이 보우하사 우리나라만세 무궁화 삼천리 화려강산...
-                    </p>
-                    <p class="comment">여기에 코멘트가 들어갑니다</p>
-
-                </div>
-            </div>
-
         </div>
     </div>
-
 </body>
 
 </html>
